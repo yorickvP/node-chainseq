@@ -1,0 +1,16 @@
+{
+  "author": "Yorick",
+  "name": "chainseq",
+  "description": "Like seq, but smaller, more complicated and hopefully less buggy.",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yorickvP/node-chainseq.git"
+  },
+  "main": "chainseq.js",
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
