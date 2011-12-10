@@ -22,6 +22,7 @@ function ChainSeq(prototype, keystore_proto) {
     var cp = ChainProvider(prototype)
     cp._keystore = KeyStore(keystore_proto)
     cp.next = cp.next.bind(cp) // bind that thing because people are likely to separate it
+    cp.run = cp.next           // and .run too
     cp.tap = function(f, nonest, async, args) {
         return prototype.tap.call(this, f, nonest, async, [this._keystore].concat(args || [])) }
     cp.flush = function() {
@@ -44,12 +45,11 @@ Chain_Seq.next = function next() {
 			if (args.length) console.log('warning: no function to absorb args')
 			return this }
 		n.f.apply(this, n.arguments.concat(args))
+		// non-async .taps have no way to specify their return args.
+		// maybe they should get one somehow. something like this.setArgs?
 		if (args.length) args = [] }
 	while(!n.async)
 	return this }
-
-Chain_Seq.run = function () {
-	return this.next.apply(this, arguments) }
 
 Chain_Seq.seq = function (f, args) {
 	if (!Array.isArray(f))
@@ -68,6 +68,7 @@ Chain_Seq.par = function (fs) {
 	var results = Array(fs.length)
 	return this.seq(function (vars) {
 		var next = this.next
+		           // expect first argument to be keystore
 		  , args = Array.prototype.slice.call(arguments, 1)
 		fs.forEach(function(f, idx) {
 			var s = ChainSeq.apply(null, protos)
